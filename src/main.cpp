@@ -57,8 +57,8 @@ void setup() {
 void loop() {
   Serial.println("*****");
   too_far::printState();
-  bool tooFarLeft = too_far::get(DIRECTION_LEFT);
-  bool tooFarRight = too_far::get(DIRECTION_RIGHT);
+  const bool tooFarLeft = too_far::get(DIRECTION_LEFT);
+  const bool tooFarRight = too_far::get(DIRECTION_RIGHT);
   motor::state_t motorState = motor::state();
 
   switch (motorState) {
