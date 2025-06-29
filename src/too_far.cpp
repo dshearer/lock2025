@@ -1,5 +1,6 @@
 #include "too_far.h"
 #include <Arduino.h>
+#include <LowPower.h>
 
 #define PIN_TOO_FAR_LEFT 2 
 #define PIN_TOO_FAR_RIGHT 3
@@ -45,4 +46,10 @@ void too_far::printState() {
     Serial.println(too_far::get(DIRECTION_LEFT) ? "DOWN" : "UP");
     Serial.print("Right button state: ");
     Serial.println(too_far::get(DIRECTION_RIGHT)  ? "DOWN" : "UP");
+}
+
+void too_far::sleepTillChange() {
+    Serial.println("Sleeping");
+    LowPower.idle(SLEEP_8S, ADC_ON, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_OFF, TWI_OFF);
+    Serial.println("Woke up from sleep");
 }

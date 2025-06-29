@@ -64,6 +64,7 @@ void loop() {
   if (tooFarLeft && tooFarRight) {
     Serial.println("Both too far left and right, stopping motor");
     motor::spinDown();
+    too_far::sleepTillChange();
     return;
   }
 
@@ -87,6 +88,10 @@ void loop() {
       motor::spinUp(DIRECTION_RIGHT);
       return;
     }
+    if (!tooFarLeft && !tooFarRight) {
+      // Neither button is pressed. It's safe to sleep till a button is pressed.
+      too_far::sleepTillChange();
+    }
     return;
 
   case motor::STATE_TURNING_RIGHT:
@@ -97,6 +102,10 @@ void loop() {
       Serial.println("Starting to spin left");
       motor::spinUp(DIRECTION_LEFT);
       return;
+    }
+    if (!tooFarLeft && !tooFarRight) {
+      // Neither button is pressed. It's safe to sleep till a button is pressed.
+      too_far::sleepTillChange();
     }
     return;
   }
