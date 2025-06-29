@@ -59,7 +59,13 @@ void loop() {
   too_far::printState();
   const bool tooFarLeft = too_far::get(DIRECTION_LEFT);
   const bool tooFarRight = too_far::get(DIRECTION_RIGHT);
-  motor::state_t motorState = motor::state();
+  const motor::state_t motorState = motor::state();
+
+  if (tooFarLeft && tooFarRight) {
+    Serial.println("Both too far left and right, stopping motor");
+    motor::spinDown();
+    return;
+  }
 
   switch (motorState) {
   case motor::STATE_STOPPED:
@@ -76,7 +82,7 @@ void loop() {
     Serial.println("Motor is turning left");
     if (tooFarLeft) {
       Serial.println("Too far left, stopping motor");
-      motor::spinDown(DIRECTION_LEFT);
+      motor::spinDown();
       Serial.println("Starting to spin right");
       motor::spinUp(DIRECTION_RIGHT);
       return;
@@ -87,7 +93,7 @@ void loop() {
     Serial.println("Motor is turning right");
     if (tooFarRight) {
       Serial.println("Too far right, stopping motor");
-      motor::spinDown(DIRECTION_RIGHT);
+      motor::spinDown();
       Serial.println("Starting to spin left");
       motor::spinUp(DIRECTION_LEFT);
       return;

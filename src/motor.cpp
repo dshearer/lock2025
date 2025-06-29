@@ -2,9 +2,6 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 
-#define DIRECTION_LEFT BACKWARD
-#define DIRECTION_RIGHT FORWARD
-
 #define MOTOR_SPEED 128
 
 // Create the motor shield object with the default I2C address
@@ -20,6 +17,28 @@ Adafruit_DCMotor* myMotor = AFMS.getMotor(1);
 static motor::state_t currState = motor::STATE_STOPPED;
 static motor::should_stop_fn_t shouldStopFn = NULL;
 
+static direction_t stateToDirection(motor::state_t state) {
+    switch (state) {
+    case motor::STATE_TURNING_LEFT:
+        return DIRECTION_LEFT;
+    case motor::STATE_TURNING_RIGHT:
+        return DIRECTION_RIGHT;
+    default:
+        return DIRECTION_NONE;
+    }
+}
+
+static motor::state_t directionToState(direction_t dir) {
+    switch (dir) {
+    case DIRECTION_LEFT:
+        return motor::STATE_TURNING_LEFT;
+    case DIRECTION_RIGHT:
+        return motor::STATE_TURNING_RIGHT;
+    default:
+        return motor::STATE_STOPPED;
+    }
+}
+
 void motor::init(motor::should_stop_fn_t f) {
     shouldStopFn = f;
 
@@ -34,18 +53,13 @@ void motor::init(motor::should_stop_fn_t f) {
     myMotor->run(RELEASE);
 }
 
-void setSpinningState(direction_t dir) {
-    switch (dir) {
-    case DIRECTION_LEFT:
-        currState = motor::STATE_TURNING_LEFT;
-        break;
-    case DIRECTION_RIGHT:
-        currState = motor::STATE_TURNING_RIGHT;
-        break;
+void motor::spinDown() {
+    const direction_t dir = stateToDirection(currState);
+    if (dir == DIRECTION_NONE) {
+        // already stopped
+        return;
     }
-}
 
-void motor::spinDown(direction_t dir) {
     myMotor->run(dir);
     for (int i = MOTOR_SPEED; i >= 0; i -= 5) {
         myMotor->setSpeed(i);
@@ -55,12 +69,13 @@ void motor::spinDown(direction_t dir) {
 }
 
 void motor::spinUp(direction_t dir) {
-    setSpinningState(dir);
+    currState = directionToState(dir);
+    
     myMotor->run(dir);
     for (int i = 0; i <= MOTOR_SPEED; i += 5) {
         if (shouldStopFn(dir)) {
             Serial.println("Stopping motor due to shouldStopFn");
-            motor::spinDown(dir);
+            motor::spinDown();
             return;
         }
         Serial.print("Setting speed to: ");

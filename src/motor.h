@@ -15,7 +15,7 @@ namespace motor {
     void init(should_stop_fn_t);
     state_t state();
     void spinUp(direction_t);
-    void spinDown(direction_t);
+    void spinDown();
 }
 
 #endif

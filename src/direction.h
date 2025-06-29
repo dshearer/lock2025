@@ -5,6 +5,7 @@
 
 typedef enum
 {
+    DIRECTION_NONE = 0,
     DIRECTION_LEFT = BACKWARD,
     DIRECTION_RIGHT = FORWARD,
 } direction_t;
