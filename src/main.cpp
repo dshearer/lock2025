@@ -47,9 +47,6 @@ void setup() {
     Serial.println("endTransmission returned error");
   }
 
-  pinMode(2, INPUT_PULLUP);
-  pinMode(3, INPUT_PULLUP);
-
   too_far::init();
   motor::init(shouldStopSpinning);
 }

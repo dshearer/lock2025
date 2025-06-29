@@ -54,13 +54,12 @@ void motor::init(motor::should_stop_fn_t f) {
 }
 
 void motor::spinDown() {
-    const direction_t dir = stateToDirection(currState);
-    if (dir == DIRECTION_NONE) {
+    if (currState == motor::STATE_STOPPED) {
         // already stopped
         return;
     }
 
-    myMotor->run(dir);
+    myMotor->run(stateToDirection(currState));
     for (int i = MOTOR_SPEED; i >= 0; i -= 5) {
         myMotor->setSpeed(i);
     }
@@ -69,8 +68,12 @@ void motor::spinDown() {
 }
 
 void motor::spinUp(direction_t dir) {
+    if (dir == stateToDirection(currState)) {
+        Serial.println("Motor is already spinning in the requested direction.");
+        return;
+    }
+
     currState = directionToState(dir);
-    
     myMotor->run(dir);
     for (int i = 0; i <= MOTOR_SPEED; i += 5) {
         if (shouldStopFn(dir)) {
@@ -80,8 +83,8 @@ void motor::spinUp(direction_t dir) {
         }
         Serial.print("Setting speed to: ");
         Serial.println(i);
-        delay(50); // Allow time for the motor to spin up
         myMotor->setSpeed(i);
+        delay(50); // Allow time for the motor to spin up
     }
 }
 
