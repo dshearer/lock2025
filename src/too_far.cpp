@@ -2,8 +2,8 @@
 #include <Arduino.h>
 #include <LowPower.h>
 
-#define PIN_TOO_FAR_LEFT 2 
-#define PIN_TOO_FAR_RIGHT 3
+#define PIN_TOO_FAR_LEFT 6
+#define PIN_TOO_FAR_RIGHT 5
 
 
 static volatile bool leftButtonDown = false;
@@ -50,6 +50,10 @@ void too_far::printState() {
 
 void too_far::sleepTillChange() {
     Serial.println("Sleeping");
+    #if defined (__AVR__)
     LowPower.idle(SLEEP_8S, ADC_ON, TIMER2_OFF, TIMER1_OFF, TIMER0_OFF, SPI_OFF, USART0_OFF, TWI_OFF);
+    #elif defined (__SAMD21G18A__)
+    LowPower.idle(IDLE_2);
+    #endif
     Serial.println("Woke up from sleep");
 }
