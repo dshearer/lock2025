@@ -10,4 +10,15 @@ typedef enum
     DIRECTION_RIGHT = FORWARD,
 } direction_t;
 
+static inline direction_t oppositeDirection(direction_t dir) {
+    switch (dir) {
+    case DIRECTION_LEFT:
+        return DIRECTION_RIGHT;
+    case DIRECTION_RIGHT:
+        return DIRECTION_LEFT;
+    default:
+        return DIRECTION_NONE;
+    }
+}
+
 #endif

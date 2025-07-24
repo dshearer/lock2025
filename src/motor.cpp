@@ -2,7 +2,8 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 
-#define MOTOR_SPEED 128
+#define MOTOR_SPEED 255
+#define INCREMENT (MOTOR_SPEED/20)
 
 // Create the motor shield object with the default I2C address
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield();
@@ -17,7 +18,7 @@ Adafruit_DCMotor* myMotor = AFMS.getMotor(1);
 static motor::state_t currState = motor::STATE_STOPPED;
 static motor::should_stop_fn_t shouldStopFn = NULL;
 
-static direction_t stateToDirection(motor::state_t state) {
+direction_t motor::stateToDirection(motor::state_t state) {
     switch (state) {
     case motor::STATE_TURNING_LEFT:
         return DIRECTION_LEFT;
@@ -60,7 +61,7 @@ void motor::spinDown() {
     }
 
     myMotor->run(stateToDirection(currState));
-    for (int i = MOTOR_SPEED; i >= 0; i -= 5) {
+    for (int i = MOTOR_SPEED; i >= 0; i -= INCREMENT) {
         myMotor->setSpeed(i);
     }
     myMotor->run(RELEASE);
@@ -75,7 +76,7 @@ void motor::spinUp(direction_t dir) {
 
     currState = directionToState(dir);
     myMotor->run(dir);
-    for (int i = 0; i <= MOTOR_SPEED; i += 5) {
+    for (int i = 0; i <= MOTOR_SPEED; i += INCREMENT) {
         if (shouldStopFn(dir)) {
             Serial.println("Stopping motor due to shouldStopFn");
             motor::spinDown();

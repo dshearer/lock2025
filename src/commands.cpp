@@ -2,8 +2,8 @@
 #include <Arduino.h>
 #include <Bounce2.h>
 
-#define PIN_TURN_LEFT 12
-#define PIN_TURN_RIGHT 13
+#define PIN_TURN_LEFT 9
+#define PIN_TURN_RIGHT 10
 #define INTERVAL_MS 5
 
 static Bounce2::Button gTurnLeftButton, gTurnRightButton;
