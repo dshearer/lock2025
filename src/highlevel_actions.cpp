@@ -2,6 +2,7 @@
 #include "motor.h"
 #include "too_far.h"
 #include "idle.h"
+#include "led.h"
 
 void highlevel_actions::turn(direction_t dir) {
     if (too_far::get(dir)) {
@@ -9,6 +10,9 @@ void highlevel_actions::turn(direction_t dir) {
         motor::spinDown();
         return;
     }
+
+    // shine yellow
+    led::shine(255, 255, 0); // yellow
 
     // spin
     const motor::state_t motor_state = motor::state();
@@ -18,7 +22,7 @@ void highlevel_actions::turn(direction_t dir) {
         motor::spinDown();
         motor::spinUp(dir);
     }
-    
+
     // wait till we're all the way to dir
     while (!too_far::get(dir)) {
         idle();
@@ -26,4 +30,7 @@ void highlevel_actions::turn(direction_t dir) {
 
     // stop the motor
     motor::spinDown();
+
+    // turn off the LED
+    led::off();
 }

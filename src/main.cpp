@@ -14,6 +14,7 @@ For use with the Adafruit Motor Shield v2
 #include "commands.h"
 #include "idle.h"
 #include "highlevel_actions.h"
+#include "led.h"
 
 static bool shouldStopSpinning(direction_t dir) {
   switch (dir) {
@@ -100,6 +101,9 @@ static void swivelLoop() {
 void setup() {
   delay(2000);
 
+  led::init();
+  led::shine(255, 0, 0); // red
+
   Serial.begin(9600); // set up Serial library at 9600 bps
   while (!Serial) {
   };
@@ -126,6 +130,14 @@ void setup() {
   too_far::init();
   motor::init(shouldStopSpinning);
   commands::init(handleCommand);
+
+  // blink green when ready
+  for (int i = 0; i < 3; i++) {
+    led::shine(0, 255, 0); // green
+    delay(100);
+    led::off();
+    delay(100);
+  }
 }
 
 void loop() {
