@@ -7,7 +7,6 @@ namespace too_far {
     void init();
     bool get(direction_t);
     void printState();
-    void sleepTillChange();
 };
 
 #endif

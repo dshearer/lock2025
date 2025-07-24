@@ -69,7 +69,7 @@ void motor::spinDown() {
 
 void motor::spinUp(direction_t dir) {
     if (dir == stateToDirection(currState)) {
-        Serial.println("Motor is already spinning in the requested direction.");
+        // Serial.println("Motor is already spinning in the requested direction.");
         return;
     }
 
@@ -81,8 +81,8 @@ void motor::spinUp(direction_t dir) {
             motor::spinDown();
             return;
         }
-        Serial.print("Setting speed to: ");
-        Serial.println(i);
+        // Serial.print("Setting speed to: ");
+        // Serial.println(i);
         myMotor->setSpeed(i);
         delay(50); // Allow time for the motor to spin up
     }
