@@ -4,6 +4,8 @@
 #include "direction.h"
 
 namespace highlevel_actions {
+    void init();
+
     /*!
         @brief Turn the lock all the way to the left/right. Block until the turn is done.
     */

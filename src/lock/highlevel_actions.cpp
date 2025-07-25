@@ -3,12 +3,15 @@
 #include "too_far.h"
 #include "idle.h"
 #include "led.h"
+#include <Arduino.h>
 
-void highlevel_actions::turn(direction_t dir) {
+static unsigned long gMillisTillCenter = 0;
+
+static bool justTurn(direction_t dir) {
     if (too_far::get(dir)) {
         // we're already fully turned in the requested direction
         motor::spinDown();
-        return;
+        return false;
     }
 
     // shine yellow
@@ -33,4 +36,37 @@ void highlevel_actions::turn(direction_t dir) {
 
     // turn off the LED
     led::off();
+
+    return true;
+}
+
+static void goToCenter(direction_t fromDir) {
+    const unsigned long startMillis = millis();
+    motor::spinUp(oppositeDirection(fromDir));
+    const unsigned long spinUpDuration = millis() - startMillis;
+    unsigned long toDelay = 0;
+    if (spinUpDuration < gMillisTillCenter) {
+        toDelay = gMillisTillCenter - spinUpDuration;
+    }
+    delay(toDelay);
+    motor::spinDown();
+}
+
+void highlevel_actions::init() {
+    // measure how long it takes to get to the center
+    Serial.println("Measuring millis till center...");
+    justTurn(DIRECTION_LEFT);
+    const long startMillis = millis();
+    justTurn(DIRECTION_RIGHT);
+    Serial.println("Done measuring millis till center");
+    gMillisTillCenter = (millis() - startMillis)/2;
+
+    Serial.println("Going to center");
+    goToCenter(DIRECTION_RIGHT);
+}
+
+void highlevel_actions::turn(direction_t dir) {
+    if (justTurn(dir)) {
+        goToCenter(dir);
+    }
 }

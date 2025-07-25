@@ -130,6 +130,7 @@ void setup() {
   too_far::init();
   motor::init(shouldStopSpinning);
   commands::init(handleCommand);
+  highlevel_actions::init();
 
   // blink green when ready
   for (int i = 0; i < 3; i++) {
