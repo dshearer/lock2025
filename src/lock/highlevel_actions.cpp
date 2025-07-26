@@ -15,7 +15,7 @@ static bool justTurn(direction_t dir) {
     }
 
     // shine yellow
-    led::shine(255, 255, 0); // yellow
+    led::shine(led::YELLOW);
 
     // spin
     const motor::state_t motor_state = motor::state();

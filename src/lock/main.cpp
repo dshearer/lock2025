@@ -9,12 +9,17 @@ For use with the Adafruit Motor Shield v2
 
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
+#include <led.h>
 #include "too_far.h"
 #include "motor.h"
 #include "commands.h"
 #include "idle.h"
 #include "highlevel_actions.h"
 #include "led.h"
+
+#define PIN_RED 11
+#define PIN_GREEN 12
+#define PIN_BLUE 13
 
 static bool shouldStopSpinning(direction_t dir) {
   switch (dir) {
@@ -101,8 +106,8 @@ static void swivelLoop() {
 void setup() {
   delay(2000);
 
-  led::init();
-  led::shine(255, 0, 0); // red
+  led::init(PIN_RED, PIN_GREEN, PIN_BLUE);
+  led::shine(led::PURPLE);
 
   Serial.begin(9600); // set up Serial library at 9600 bps
   while (!Serial) {
@@ -133,12 +138,7 @@ void setup() {
   highlevel_actions::init();
 
   // blink green when ready
-  for (int i = 0; i < 3; i++) {
-    led::shine(0, 255, 0); // green
-    delay(100);
-    led::off();
-    delay(100);
-  }
+  led::blink(led::GREEN, 3);
 }
 
 void loop() {
