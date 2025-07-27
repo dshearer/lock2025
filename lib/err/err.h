@@ -18,18 +18,9 @@ namespace err {
     const t RADIO_INVALID_RESPONSE = 8;
     const t RADIO_INVALID_COMMAND = 9;
     const t RADIO_MSG_ENQUEUE_FAILED = 10;
+    const t HARDWARE_FAILURE = 11;
 
     const char *to_string(t err);
 }
-
-#include <assert.h>
-
-#define ASSERT_OK(e) do { \
-    err::t _err = (e); \
-    if (_err != err::OK) { \
-        Serial.print("ERROR: "); \
-        Serial.println(err::to_string(_err)); \
-    } \
-} while(false)
 
 #endif

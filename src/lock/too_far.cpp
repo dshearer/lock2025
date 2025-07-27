@@ -1,8 +1,8 @@
 #include "too_far.h"
 #include <Arduino.h>
 
-#define PIN_TOO_FAR_LEFT 6
-#define PIN_TOO_FAR_RIGHT 5
+#define PIN_TOO_FAR_LEFT 5
+#define PIN_TOO_FAR_RIGHT 6
 
 
 static volatile bool leftButtonDown = false;

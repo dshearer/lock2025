@@ -24,31 +24,32 @@ For use with the Adafruit Motor Shield v2
 
 static bool gHadFatalError = false;
 
-static bool shouldStopSpinning(direction_t dir) {
-  switch (dir) {
-  case DIRECTION_LEFT:
-    return too_far::get(DIRECTION_LEFT);
-  case DIRECTION_RIGHT:
-    return too_far::get(DIRECTION_RIGHT);
-  default:
-    return false;
-  }
+static void fail(const char *msg) {
+  Serial.print("FATAL ERROR: ");
+  Serial.println(msg);
+  gHadFatalError = true;
 }
 
 static void handleCommand_button(cmds::command_t cmd) {
+  err::t e = err::OK;
   switch (cmd) {
   case cmds::TURN_LEFT:
     Serial.println("Should turn left");
-    highlevel_actions::turn(DIRECTION_LEFT);
+    e = highlevel_actions::turn(DIRECTION_LEFT);
     break;
 
   case cmds::TURN_RIGHT:
     Serial.println("Should turn right");
-    highlevel_actions::turn(DIRECTION_RIGHT);
+    e = highlevel_actions::turn(DIRECTION_RIGHT);
     break;
 
   default:
     return;
+  }
+
+  if (e != err::OK) {
+    // oh no!
+    fail(err::to_string(e));
   }
 }
 
@@ -75,22 +76,26 @@ void setup() {
   Wire.setTimeout(1000);
   Wire.beginTransmission(0x60);
   if (Wire.write(0x10) == 0) {
-    Serial.println("ERROR: I2C failed");
-    gHadFatalError = true;
+    fail("I2C failed");
     return;
   }
   if (Wire.endTransmission() != 0) {
-    Serial.println("endTransmission returned error");
-    gHadFatalError = true;
+    fail("endTransmission returned error");
     return;
   }
 
   too_far::init();
-  motor::init(shouldStopSpinning);
   button::init(handleCommand_button);
-  highlevel_actions::init();
-  err::t e = lock_radio::init(handleCommand_radio);
-  ASSERT_OK(e);
+  err::t e = highlevel_actions::init();
+  if (e != err::OK) {
+    fail(err::to_string(e));
+    return;
+  }
+  e = lock_radio::init(handleCommand_radio);
+  if (e != err::OK) {
+    fail(err::to_string(e));
+    return;
+  }
 
   // blink green when ready
   led::blink(led::GREEN, 3);
@@ -103,6 +108,9 @@ void loop() {
   }
 
   button::update();
-  err::t e = lock_radio::listen();
-  ASSERT_OK(e);
+  const err::t e = lock_radio::listen();
+  if (e != err::OK) {
+    Serial.print("ERROR: ");
+    Serial.println(err::to_string(e));
+  }
 }
