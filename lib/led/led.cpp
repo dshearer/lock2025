@@ -22,7 +22,21 @@ void led::shine(color_t color) {
 
 #define BLINK_DELAY_MS 100
 
+static void blinkForever(led::color_t color) {
+    while (true) {
+        led::shine(color);
+        delay(BLINK_DELAY_MS);
+        led::off();
+        delay(BLINK_DELAY_MS);
+    }
+}
+
 void led::blink(color_t color, int times) {
+    if (times < 0) {
+        blinkForever(color);
+        return;
+    }
+
     for (int i = 0; i < times; ++i) {
         led::shine(color);
         delay(BLINK_DELAY_MS);

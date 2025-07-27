@@ -1,16 +1,12 @@
 #ifndef __COMMANDS_H__
 #define __COMMANDS_H__
 
-namespace commands {
+namespace cmds {
     typedef enum {
+        NOP = 0,
         TURN_LEFT = 1,
         TURN_RIGHT = 2,
-    } cmd_t;
-
-    typedef void(*handler_t)(cmd_t);
-
-    void init(handler_t);
-    void update();
+    } command_t;
 }
 
 #endif

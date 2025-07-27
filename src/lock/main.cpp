@@ -12,14 +12,17 @@ For use with the Adafruit Motor Shield v2
 #include <led.h>
 #include "too_far.h"
 #include "motor.h"
-#include "commands.h"
+#include "button.h"
 #include "idle.h"
 #include "highlevel_actions.h"
 #include "led.h"
+#include "lock_radio.h"
 
 #define PIN_RED 11
 #define PIN_GREEN 12
 #define PIN_BLUE 13
+
+static bool gHadFatalError = false;
 
 static bool shouldStopSpinning(direction_t dir) {
   switch (dir) {
@@ -32,75 +35,26 @@ static bool shouldStopSpinning(direction_t dir) {
   }
 }
 
-static void handleCommand(commands::cmd_t cmd) {
+static void handleCommand_button(cmds::command_t cmd) {
   switch (cmd) {
-  case commands::TURN_LEFT:
+  case cmds::TURN_LEFT:
     Serial.println("Should turn left");
     highlevel_actions::turn(DIRECTION_LEFT);
     break;
-  case commands::TURN_RIGHT:
+
+  case cmds::TURN_RIGHT:
     Serial.println("Should turn right");
     highlevel_actions::turn(DIRECTION_RIGHT);
     break;
+
+  default:
+    return;
   }
 }
 
-static void swivelLoop() {
-  // Serial.println("*****");
-  // too_far::printState();
-
-  const bool tooFarLeft = too_far::get(DIRECTION_LEFT);
-  const bool tooFarRight = too_far::get(DIRECTION_RIGHT);
-  const motor::state_t motorState = motor::state();
-
-  if (tooFarLeft && tooFarRight) {
-    // Serial.println("Both too far left and right, stopping motor");
-    motor::spinDown();
-    idle();
-    return;
-  }
-
-  switch (motorState) {
-  case motor::STATE_STOPPED:
-    // Serial.println("Motor is stopped");
-    if (tooFarLeft) {
-      // Serial.println("Too far left, spinning right");
-      motor::spinUp(DIRECTION_RIGHT);
-      return;
-    }
-    motor::spinUp(DIRECTION_LEFT);
-    return;
-
-  case motor::STATE_TURNING_LEFT:
-    // Serial.println("Motor is turning left");
-    if (tooFarLeft) {
-      // Serial.println("Too far left, stopping motor");
-      motor::spinDown();
-      // Serial.println("Starting to spin right");
-      motor::spinUp(DIRECTION_RIGHT);
-      return;
-    }
-    if (!tooFarLeft && !tooFarRight) {
-      // Neither button is pressed. It's safe to sleep till a button is pressed.
-      idle();
-    }
-    return;
-
-  case motor::STATE_TURNING_RIGHT:
-    // Serial.println("Motor is turning right");
-    if (tooFarRight) {
-      // Serial.println("Too far right, stopping motor");
-      motor::spinDown();
-      // Serial.println("Starting to spin left");
-      motor::spinUp(DIRECTION_LEFT);
-      return;
-    }
-    if (!tooFarLeft && !tooFarRight) {
-      // Neither button is pressed. It's safe to sleep till a button is pressed.
-      idle();
-    }
-    return;
-  }
+static void handleCommand_radio(cmds::command_t cmd, radio::resp_t *resp) {
+  handleCommand_button(cmd);
+  strncpy(resp->msg, "Done", sizeof(resp->msg) - 1);
 }
 
 void setup() {
@@ -109,38 +63,46 @@ void setup() {
   led::init(PIN_RED, PIN_GREEN, PIN_BLUE);
   led::shine(led::PURPLE);
 
+  // set up serial
   Serial.begin(9600); // set up Serial library at 9600 bps
-  while (!Serial) {
-  };
-  Serial.println("\nAdafruit Motorshield v2 - DC Motor test!");
+  const unsigned long serialTimeoutMillis = millis() + 2000;
+  while (!Serial && millis() < serialTimeoutMillis) {
+    delay(10);
+  }
 
-  Serial.println("calling Wire.begin");
+  // set up Wire
   Wire.begin();
   Wire.setTimeout(1000);
-  Serial.println("called Wire.begin");
-
-  Serial.println("Begining transmission");
   Wire.beginTransmission(0x60);
-  Serial.println("Sending I2C");
   if (Wire.write(0x10) == 0) {
-    Serial.println("I2C failed");
+    Serial.println("ERROR: I2C failed");
+    gHadFatalError = true;
+    return;
   }
-  Serial.println("Sent I2C");
-  int err = Wire.endTransmission();
-  Serial.println("Ending transmission");
-  if (err != 0) {
+  if (Wire.endTransmission() != 0) {
     Serial.println("endTransmission returned error");
+    gHadFatalError = true;
+    return;
   }
 
   too_far::init();
   motor::init(shouldStopSpinning);
-  commands::init(handleCommand);
+  button::init(handleCommand_button);
   highlevel_actions::init();
+  err::error_t e = lock_radio::init(handleCommand_radio);
+  ASSERT_OK(e);
 
   // blink green when ready
   led::blink(led::GREEN, 3);
 }
 
 void loop() {
-  commands::update();
+  if (gHadFatalError) {
+    led::blink(led::RED, -1); // blink red forever
+    return;
+  }
+
+  button::update();
+  err::error_t e = lock_radio::listen();
+  ASSERT_OK(e);
 }

@@ -1,4 +1,4 @@
-#include "commands.h"
+#include "button.h"
 #include <Arduino.h>
 #include <Bounce2.h>
 
@@ -7,11 +7,11 @@
 #define DOUBLE_CLICK_MS 500
 
 static Bounce2::Button gTurnButton;
-static commands::handler_t gHandler = nullptr;
+static button::handler_t gHandler = nullptr;
 static unsigned long gLastClickMillis = 0;
 
-void commands::init(handler_t handler) {
-    Serial.println("Initializing commands module");
+void button::init(handler_t handler) {
+    Serial.println("Initializing button module");
 
     gHandler = handler;
 
@@ -24,7 +24,7 @@ void commands::init(handler_t handler) {
     // attachInterrupt(digitalPinToInterrupt(PIN_TURN_RIGHT), rightISR, CHANGE);
 }
 
-void commands::update() {
+void button::update() {
     gTurnButton.update();
 
     if (gTurnButton.pressed()) {
@@ -35,7 +35,7 @@ void commands::update() {
         } else {
             // second click
             gLastClickMillis = 0;
-            gHandler(commands::TURN_RIGHT);
+            gHandler(cmds::TURN_RIGHT);
         }
         return;
     }
@@ -45,7 +45,7 @@ void commands::update() {
         if (millis() - gLastClickMillis > DOUBLE_CLICK_MS) {
             // timeout, reset last click
             gLastClickMillis = 0;
-            gHandler(commands::TURN_LEFT);
+            gHandler(cmds::TURN_LEFT);
         }
     }
 }
