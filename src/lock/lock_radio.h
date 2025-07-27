@@ -8,8 +8,8 @@
 namespace lock_radio {
     typedef void (*handler_t)(cmds::command_t cmd, radio::resp_t *resp);
 
-    err::error_t init(handler_t);
-    err::error_t listen();
+    err::t init(handler_t);
+    err::t listen();
 }
 
 #endif

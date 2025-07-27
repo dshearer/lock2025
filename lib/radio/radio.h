@@ -12,7 +12,7 @@ namespace radio {
         char msg[16];
     } resp_t;
 
-    err::error_t initRadio(RH_RF69 **rf69);
+    err::t initRadio(RH_RF69 **rf69);
 }
 
 #endif

@@ -6,8 +6,8 @@
 #include <radio.h>
 
 namespace remote_radio {
-    err::error_t init();
-    err::error_t send(cmds::command_t cmd, radio::resp_t *resp);
+    err::t init();
+    err::t send(cmds::command_t cmd, radio::resp_t *resp);
 }
 
 #endif

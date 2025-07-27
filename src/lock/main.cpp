@@ -89,7 +89,7 @@ void setup() {
   motor::init(shouldStopSpinning);
   button::init(handleCommand_button);
   highlevel_actions::init();
-  err::error_t e = lock_radio::init(handleCommand_radio);
+  err::t e = lock_radio::init(handleCommand_radio);
   ASSERT_OK(e);
 
   // blink green when ready
@@ -103,6 +103,6 @@ void loop() {
   }
 
   button::update();
-  err::error_t e = lock_radio::listen();
+  err::t e = lock_radio::listen();
   ASSERT_OK(e);
 }

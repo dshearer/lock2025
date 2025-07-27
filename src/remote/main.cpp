@@ -10,7 +10,7 @@
 static void sendCommand(cmds::command_t cmd) {
     led::shine(led::YELLOW);
     radio::resp_t resp = { {0} };
-    err::error_t e = remote_radio::send(cmd, &resp);
+    err::t e = remote_radio::send(cmd, &resp);
     ASSERT_OK(e);
     Serial.print("Response: ");
     Serial.println(resp.msg);
@@ -23,7 +23,7 @@ void setup() {
 
     Serial.println("hi");
     buttons::init(sendCommand);
-    err::error_t e = remote_radio::init();
+    err::t e = remote_radio::init();
     ASSERT_OK(e);
 
     led::blink(led::GREEN, 3);
