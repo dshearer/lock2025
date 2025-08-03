@@ -1,0 +1,89 @@
+(footprint "Polycase_BATT-HDR-FB"
+	(version 20241229)
+	(generator "pcbnew")
+	(generator_version "9.0")
+	(layer "F.Cu")
+	(property "Reference" "BATT-HDR-FB"
+		(at 0 -11 0)
+		(unlocked yes)
+		(layer "F.SilkS")
+		(hide yes)
+		(uuid "dd831d6a-2f60-405c-900a-1df952f39d07")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.1)
+			)
+		)
+	)
+	(property "Value" "Polycase_BATT-HDR-FB"
+		(at 0 10.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "415f8ab7-e762-4cfc-9999-e7100644cd30")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "dc720639-4cb4-4aa3-9806-604ceeed097a")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "e204f125-9a83-4b6d-849e-7974752e38a1")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(attr smd)
+	(fp_text user "${REFERENCE}"
+		(at 0 12.5 0)
+		(unlocked yes)
+		(layer "F.Fab")
+		(uuid "921c9b6f-4789-4b57-8097-143ecab5571d")
+		(effects
+			(font
+				(size 1 1)
+				(thickness 0.15)
+			)
+		)
+	)
+	(pad "1" smd circle
+		(at 0 0)
+		(size 17.78 17.78)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "5239c446-1963-49ae-8a71-de3ae257736d")
+	)
+	(pad "2" smd rect
+		(at -10.985 0)
+		(size 2.79 5.08)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "65b295d7-d90f-48c3-a1ed-1c7f9c5759e9")
+	)
+	(pad "2" smd rect
+		(at 10.985 0)
+		(size 2.79 5.08)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(uuid "26eb0405-d4b1-4f0a-80f3-a66ef9c0a229")
+	)
+	(embedded_fonts no)
+)
