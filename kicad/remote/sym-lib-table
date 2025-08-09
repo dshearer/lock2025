@@ -7,4 +7,6 @@
   (lib (name "BUTTON_FSM2JSMAATR")(type "KiCad")(uri "${KIPRJMOD}/library/BUTTON_FSM2JSMAATR.kicad_sym")(options "")(descr ""))
   (lib (name "ANTENNA_M620720")(type "KiCad")(uri "${KIPRJMOD}/library/ANTENNA_M620720.kicad_sym")(options "")(descr ""))
   (lib (name "B3F-1000")(type "KiCad")(uri "${KIPRJMOD}/library/B3F-1000.kicad_sym")(options "")(descr ""))
+  (lib (name "PTS645SK43SMTR92LFS")(type "KiCad")(uri "${KIPRJMOD}/library/PTS645SK43SMTR92LFS.kicad_sym")(options "")(descr ""))
+  (lib (name "CSTNE8M00G550000R0")(type "KiCad")(uri "${KIPRJMOD}/library/CSTNE8M00G550000R0.kicad_sym")(options "")(descr ""))
 )

@@ -1,0 +1,20 @@
+### Footprint positions - created on 2025-08-06T08:51:32-0400 ###
+### Printed by KiCad version 9.0.3
+## Unit = inches, Angle = deg.
+## Side : All
+# Ref     Val              Package                               PosX       PosY       Rot  Side
+ANT1      M620720          ANTENNA_M620720_KYO                 9.4881    -2.1460  180.0000  bottom
+B3        B3U-1000P        BUTTON_SW_B3U-1000P                 8.2781    -2.1760    0.0000  bottom
+C1        0.1uF            C_0201_0603Metric                   7.7301    -2.3160   90.0000  bottom
+C3        10uF             C_0805_2012Metric                   8.3961    -2.0220  180.0000  bottom
+C4        10uF             C_0805_2012Metric                   7.6661    -2.4280   90.0000  bottom
+CPU1      ATmega328P-A     TQFP-32_7x7mm_P0.8mm                8.0031    -2.4110  180.0000  bottom
+R1        10kOhm           R_0201_0603Metric                   8.0007    -2.0260  180.0000  bottom
+RADIO1    RFM69HCW-915MHz  RFM69HCW_SPK                        8.8281    -2.3260   90.0000  bottom
+Y1        8MHz             CSTNE8M00G550000R0                  8.3631    -2.4194  -90.0000  bottom
+B1        digital_5        SW_PTS645SK43SMTR92LFS              9.4231    -2.4358    0.0000  top
+B2        digital_6        SW_PTS645SK43SMTR92LFS              8.8981    -2.4358    0.0000  top
+BAT1      CR2032           Polycase_BATT-HDR-FB                7.9531    -2.5210  180.0000  top
+C2        0.1uF            C_0201_0603Metric                   8.7081    -2.1110  180.0000  top
+ISP1      ISP              PinSocket_2x03_P2.54mm_Vertical     8.7931    -2.7810   90.0000  top
+## End
