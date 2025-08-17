@@ -1,4 +1,4 @@
-26463118191418168
+26466629826835574
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -105644,6 +105644,13 @@ B3F-1000
 4
 4
 lock_project
+BAT_BK-912
+
+
+0
+3
+3
+lock_project
 BUTTON_SW_B3U-1000P
 
 
@@ -105705,6 +105712,13 @@ Polycase_BATT-HDR-FB
 
 0
 3
+2
+lock_project
+RESC1607X60N
+
+
+0
+2
 2
 lock_project
 RFM69HCW_SPK

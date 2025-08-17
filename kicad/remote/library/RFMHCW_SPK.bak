@@ -54,6 +54,15 @@
 				(hide yes)
 			)
 		)
+		(property "DigiKey part #" "1568-13909-ND"
+			(at 0 0 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(property "ki_keywords" "COM-13909"
 			(at 0 0 0)
 			(effects
@@ -121,7 +130,7 @@
 					(type none)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 0 0 0)
 				(length 7.62)
 				(name "GND"
@@ -247,7 +256,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 0 -17.78 0)
 				(length 7.62)
 				(name "GND"
@@ -373,7 +382,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 45.72 -15.24 180)
 				(length 7.62)
 				(name "GND"
@@ -391,7 +400,7 @@
 					)
 				)
 			)
-			(pin unspecified line
+			(pin bidirectional line
 				(at 45.72 -17.78 180)
 				(length 7.62)
 				(name "ANT"

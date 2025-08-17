@@ -1,20 +1,22 @@
-### Footprint positions - created on 2025-08-06T08:51:32-0400 ###
+### Footprint positions - created on 2025-08-17T17:29:50-0400 ###
 ### Printed by KiCad version 9.0.3
-## Unit = inches, Angle = deg.
+## Unit = mm, Angle = deg.
 ## Side : All
 # Ref     Val              Package                               PosX       PosY       Rot  Side
-ANT1      M620720          ANTENNA_M620720_KYO                 9.4881    -2.1460  180.0000  bottom
-B3        B3U-1000P        BUTTON_SW_B3U-1000P                 8.2781    -2.1760    0.0000  bottom
-C1        0.1uF            C_0201_0603Metric                   7.7301    -2.3160   90.0000  bottom
-C3        10uF             C_0805_2012Metric                   8.3961    -2.0220  180.0000  bottom
-C4        10uF             C_0805_2012Metric                   7.6661    -2.4280   90.0000  bottom
-CPU1      ATmega328P-A     TQFP-32_7x7mm_P0.8mm                8.0031    -2.4110  180.0000  bottom
-R1        10kOhm           R_0201_0603Metric                   8.0007    -2.0260  180.0000  bottom
-RADIO1    RFM69HCW-915MHz  RFM69HCW_SPK                        8.8281    -2.3260   90.0000  bottom
-Y1        8MHz             CSTNE8M00G550000R0                  8.3631    -2.4194  -90.0000  bottom
-B1        digital_5        SW_PTS645SK43SMTR92LFS              9.4231    -2.4358    0.0000  top
-B2        digital_6        SW_PTS645SK43SMTR92LFS              8.8981    -2.4358    0.0000  top
-BAT1      CR2032           Polycase_BATT-HDR-FB                7.9531    -2.5210  180.0000  top
-C2        0.1uF            C_0201_0603Metric                   8.7081    -2.1110  180.0000  top
-ISP1      ISP              PinSocket_2x03_P2.54mm_Vertical     8.7931    -2.7810   90.0000  top
+ANT1      ~                ANTENNA_M620720_KYO                54.1782    23.5712  180.0000  bottom
+B3        B3U-1000P        BUTTON_SW_B3U-1000P                23.4442    22.8092    0.0000  bottom
+C1        0.1uF            C_0805_2012Metric                   8.9916    21.1074   90.0000  bottom
+C3        10uF             C_0805_2012Metric                  26.4414    26.7208  180.0000  bottom
+C4        10uF             C_0805_2012Metric                   8.8138    16.5608   90.0000  bottom
+CPU1      ATmega328P-A     TQFP-32_7x7mm_P0.8mm               16.4592    16.8402  180.0000  bottom
+D1        LED              LED_0603_1608Metric                10.9728    25.8572  180.0000  bottom
+R1        10k              R_0603_1608Metric                  16.3982    26.6192  180.0000  bottom
+R2        4.7k             R_0603_1608Metric                   7.9502    25.8318  180.0000  bottom
+RADIO1    RFM69HCW-915MHz  RFM69HCW_SPK                       37.4142    18.9992   90.0000  bottom
+Y1        8MHz             CSTNE8M00G550000R0                 25.6032    16.6262  -90.0000  bottom
+B1        digital_5        SW_PTS645SK43SMTR92LFS             52.5272    16.2092    0.0000  top
+B2        digital_6        SW_PTS645SK43SMTR92LFS             39.1922    16.2092    0.0000  top
+BAT1      CR2032           BAT_BK-912                         15.1892    14.0462  180.0000  top
+C2        0.1uF            C_0805_2012Metric                  34.3662    24.4602  180.0000  top
+ISP1      ISP              PinSocket_2x03_P2.54mm_Vertical    36.5252     7.4422   90.0000  top
 ## End

@@ -463,7 +463,7 @@
       "no_connect_dangling": "warning",
       "pin_not_connected": "error",
       "pin_not_driven": "error",
-      "pin_to_pin": "warning",
+      "pin_to_pin": "error",
       "power_pin_not_driven": "error",
       "same_local_global_label": "warning",
       "similar_label_and_power": "warning",
@@ -502,8 +502,8 @@
         "priority": 2147483647,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.1524,
-        "via_diameter": 0.4572,
-        "via_drill": 0.254,
+        "via_diameter": 0.50546,
+        "via_drill": 0.30226,
         "wire_width": 6
       },
       {
@@ -519,8 +519,8 @@
         "priority": 0,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.3048,
-        "via_diameter": 0.4572,
-        "via_drill": 0.254,
+        "via_diameter": 0.50546,
+        "via_drill": 0.30226,
         "wire_width": 6
       },
       {
@@ -536,8 +536,8 @@
         "priority": 1,
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.508,
-        "via_diameter": 0.4572,
-        "via_drill": 0.254,
+        "via_diameter": 0.50546,
+        "via_drill": 0.30226,
         "wire_width": 6
       }
     ],
@@ -554,7 +554,7 @@
       "idf": "",
       "netlist": "",
       "plot": "gerbers",
-      "pos_files": "",
+      "pos_files": "./",
       "specctra_dsn": "",
       "step": "",
       "svg": "",
@@ -733,6 +733,36 @@
           "group_by": false,
           "label": "DigiKey part #",
           "name": "DigiKey part #",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Availability",
+          "name": "Availability",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Description_1",
+          "name": "Description_1",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Package",
+          "name": "Package",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Price",
+          "name": "Price",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "Purchase-URL",
+          "name": "Purchase-URL",
           "show": false
         }
       ],
