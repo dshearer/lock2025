@@ -1,8 +1,6 @@
 #ifndef __DYLAN_ERR_H__
 #define __DYLAN_ERR_H__
 
-#include <map>
-
 namespace err {
     typedef int t;
 
