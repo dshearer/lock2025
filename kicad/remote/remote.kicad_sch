@@ -6755,7 +6755,7 @@
 				)
 			)
 		)
-		(property "Value" "4.7k"
+		(property "Value" "330 Ohm"
 			(at 179.07 21.59 90)
 			(effects
 				(font
