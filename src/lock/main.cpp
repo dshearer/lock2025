@@ -58,11 +58,12 @@ static void handleCommand_radio(cmds::command_t cmd, radio::resp_t *resp) {
   strncpy(resp->msg, "Done", sizeof(resp->msg) - 1);
 }
 
+static led::Rgb gLed(PIN_RED, PIN_GREEN, PIN_BLUE);
+
 void setup() {
   delay(2000);
 
-  led::init(PIN_RED, PIN_GREEN, PIN_BLUE);
-  led::shine(led::PURPLE);
+  gLed.shine(led::PURPLE);
 
   // set up serial
   Serial.begin(9600); // set up Serial library at 9600 bps
@@ -98,12 +99,12 @@ void setup() {
   }
 
   // blink green when ready
-  led::blink(led::GREEN, 3);
+  gLed.blink(led::GREEN, 3);
 }
 
 void loop() {
   if (gHadFatalError) {
-    led::blink(led::RED, -1); // blink red forever
+    gLed.blink(led::RED, -1); // blink red forever
     return;
   }
 

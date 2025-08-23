@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 namespace led {
+    
     typedef struct {
         uint8_t r, g, b;
     } color_t;
@@ -15,14 +16,23 @@ namespace led {
     const color_t PURPLE = { 128, 0, 128 };
     const color_t YELLOW = { 255, 255, 0 };
 
-    void init(uint32_t redPin, uint32_t greenPin, uint32_t bluePin);
-    void shine(color_t);
+    class Rgb {
+    private:
+        uint32_t _redPin;
+        uint32_t _greenPin;
+        uint32_t _bluePin;
 
-    /*!
-        \brief If times is negative, blinks forever.
-    */
-    void blink(color_t color, int times);
-    void off();
+        void blinkForever(led::color_t color);
+
+    public:
+          Rgb(uint32_t redPin, uint32_t greenPin, uint32_t bluePin);
+          void shine(color_t);
+          /*!
+                \brief If times is negative, blinks forever.
+          */
+          void blink(color_t color, int times);
+          void off();
+    };
 }
 
 #endif

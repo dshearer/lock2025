@@ -8,6 +8,7 @@
 #define PIN_BLUE 10
 
 static bool gHadFatalError = false;
+static led::Rgb gLed(PIN_RED, PIN_GREEN, PIN_BLUE);
 
 static void fail(const char* msg) {
     Serial.print("FATAL ERROR: ");
@@ -16,23 +17,22 @@ static void fail(const char* msg) {
 }
 
 static void sendCommand(cmds::command_t cmd) {
-    led::shine(led::YELLOW);
+    gLed.shine(led::YELLOW);
     radio::resp_t resp = { {0} };
     err::t e = remote_radio::send(cmd, &resp);
     if (e != err::OK) {
         Serial.print("ERROR: ");
         Serial.println(err::to_string(e));
-        led::blink(led::RED, 2);
+        gLed.blink(led::RED, 2);
         return;
     }
     Serial.print("Response: ");
     Serial.println(resp.msg);
-    led::off();
+    gLed.off();
 }
 
 void setup() {
-    led::init(PIN_RED, PIN_GREEN, PIN_BLUE);
-    led::shine(led::PURPLE);
+    gLed.shine(led::PURPLE);
 
     Serial.println("hi");
     buttons::init(sendCommand);
@@ -42,14 +42,14 @@ void setup() {
         return;
     }
 
-    led::blink(led::GREEN, 3);
+    gLed.blink(led::GREEN, 3);
 
     // pinMode(8, OUTPUT);
 }
 
 void loop() {
     if (gHadFatalError) {
-        led::blink(led::RED, -1); // blink red forever
+        gLed.blink(led::RED, -1); // blink red forever
         return;
     }
 

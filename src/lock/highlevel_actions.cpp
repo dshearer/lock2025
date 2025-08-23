@@ -84,7 +84,7 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     }
 
     // shine yellow
-    led::shine(led::YELLOW);
+    // gLed.shine(led::YELLOW);
 
     // spin
     const motor::state_t motor_state = motor::state();
@@ -106,7 +106,7 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     motor::spinDown();
 
     // turn off the LED
-    led::off();
+    // led::off();
 
     // check status
     if (!too_far::get(dir)) {

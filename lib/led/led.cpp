@@ -1,52 +1,50 @@
 #include "led.h"
 #include <Arduino.h>
 
-static uint32_t gRedPin = 0;
-static uint32_t gGreenPin = 0;
-static uint32_t gBluePin = 0;
+namespace led {
 
-void led::init(uint32_t redPin, uint32_t greenPin, uint32_t bluePin) {
-    gRedPin = redPin;
-    gGreenPin = greenPin;
-    gBluePin = bluePin;
-    pinMode(gRedPin, OUTPUT);
-    pinMode(gGreenPin, OUTPUT);
-    pinMode(gBluePin, OUTPUT);
+Rgb::Rgb(uint32_t redPin, uint32_t greenPin, uint32_t bluePin)
+: _redPin(redPin), _greenPin(greenPin), _bluePin(bluePin) {
+    pinMode(redPin, OUTPUT);
+    pinMode(greenPin, OUTPUT);
+    pinMode(bluePin, OUTPUT);
 }
 
-void led::shine(color_t color) {
-    analogWrite(gRedPin, color.r);
-    analogWrite(gGreenPin, color.g);
-    analogWrite(gBluePin, color.b);
+void Rgb::shine(color_t color) {
+    analogWrite(this->_redPin, color.r);
+    analogWrite(this->_greenPin, color.g);
+    analogWrite(this->_bluePin, color.b);
 }
 
 #define BLINK_DELAY_MS 100
 
-static void blinkForever(led::color_t color) {
+void Rgb::blinkForever(led::color_t color) {
     while (true) {
-        led::shine(color);
+        this->shine(color);
         delay(BLINK_DELAY_MS);
-        led::off();
+        this->off();
         delay(BLINK_DELAY_MS);
     }
 }
 
-void led::blink(color_t color, int times) {
+void Rgb::blink(color_t color, int times) {
     if (times < 0) {
-        blinkForever(color);
+        this->blinkForever(color);
         return;
     }
 
     for (int i = 0; i < times; ++i) {
-        led::shine(color);
+        this->shine(color);
         delay(BLINK_DELAY_MS);
-        led::off();
+        this->off();
         if (i < times - 1) { // Avoid delay after the last blink
             delay(BLINK_DELAY_MS);
         }
     }
 }
 
-void led::off() {
-    led::shine(OFF);
+void Rgb::off() {
+    this->shine(OFF);
+}
+
 }
