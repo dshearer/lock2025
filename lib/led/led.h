@@ -4,7 +4,23 @@
 #include <stdint.h>
 
 namespace led {
-    
+
+    class Mono {
+    private:
+        uint32_t _pin;
+
+        void blinkForever();
+
+    public:
+        Mono(uint32_t pin);
+        void on();
+        void off();
+        /*!
+              \brief If times is negative, blinks forever.
+        */
+        void blink(int times);
+    };
+
     typedef struct {
         uint8_t r, g, b;
     } color_t;
@@ -25,13 +41,13 @@ namespace led {
         void blinkForever(led::color_t color);
 
     public:
-          Rgb(uint32_t redPin, uint32_t greenPin, uint32_t bluePin);
-          void shine(color_t);
-          /*!
-                \brief If times is negative, blinks forever.
-          */
-          void blink(color_t color, int times);
-          void off();
+        Rgb(uint32_t redPin, uint32_t greenPin, uint32_t bluePin);
+        void shine(color_t);
+        void off();
+        /*!
+              \brief If times is negative, blinks forever.
+        */
+        void blink(color_t color, int times);
     };
 }
 
