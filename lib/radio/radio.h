@@ -17,7 +17,7 @@ namespace radio {
         BOARD_LOCK
     } board_t;
 
-    err::t initRadio(RH_RF69 **rf69, board_t board);
+    err::t init(RH_RF69 **rf69, board_t board);
 }
 
 #endif

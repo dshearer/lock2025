@@ -10,7 +10,7 @@
 #define RFM69_CS_REMOTE    10  // D10 (a.k.a SS/NSS)
 #define RFM69_INT_REMOTE   2   // D2
 
-err::t radio::initRadio(RH_RF69 **rf69, board_t board) {
+err::t radio::init(RH_RF69 **rf69, board_t board) {
     uint8_t cs = 0;
     uint8_t intr = 0;
     switch (board) {
