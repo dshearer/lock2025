@@ -1,8 +1,8 @@
 #include "button.h"
+#include "pins.h"
 #include <Arduino.h>
 #include <Bounce2.h>
 
-#define BUTTON_PIN 9
 #define INTERVAL_MS 5
 #define DOUBLE_CLICK_MS 500
 
@@ -15,7 +15,7 @@ void button::init(handler_t handler) {
 
     gHandler = handler;
 
-    gTurnButton.attach(BUTTON_PIN, INPUT_PULLUP);
+    gTurnButton.attach(PIN_BUTTON, INPUT_PULLUP);
     gTurnButton.interval(INTERVAL_MS);
     gTurnButton.setPressedState(LOW);
 

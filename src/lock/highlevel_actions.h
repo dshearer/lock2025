@@ -5,6 +5,8 @@
 #include <err.h>
 
 namespace highlevel_actions {
+    extern const uint8_t motorI2cAddr;
+
     err::t init();
 
     /*!

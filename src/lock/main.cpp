@@ -11,16 +11,12 @@ For use with the Adafruit Motor Shield v2
 #include <Adafruit_MotorShield.h>
 #include <led.h>
 #include "too_far.h"
-#include "motor.h"
 #include "button.h"
 #include "idle.h"
 #include "highlevel_actions.h"
 #include "led.h"
 #include "lock_radio.h"
-
-#define PIN_RED 11
-#define PIN_GREEN 12
-#define PIN_BLUE 13
+#include "pins.h"
 
 static bool gHadFatalError = false;
 
@@ -72,10 +68,12 @@ void setup() {
     delay(10);
   }
 
+  Serial.println("Starting up...");
+
   // set up Wire
   Wire.begin();
   Wire.setTimeout(1000);
-  Wire.beginTransmission(0x60);
+  Wire.beginTransmission(highlevel_actions::motorI2cAddr);
   if (Wire.write(0x10) == 0) {
     fail("I2C failed");
     return;
@@ -84,22 +82,31 @@ void setup() {
     fail("endTransmission returned error");
     return;
   }
+  Serial.println("I2C OK");
 
   too_far::init();
+  Serial.println("too_far initialized");
+
   button::init(handleCommand_button);
+  Serial.println("button initialized");
+
   err::t e = highlevel_actions::init();
   if (e != err::OK) {
     fail(err::to_string(e));
     return;
   }
+  Serial.println("highlevel_actions initialized");
+
   e = lock_radio::init(handleCommand_radio);
   if (e != err::OK) {
     fail(err::to_string(e));
     return;
   }
+  Serial.println("lock_radio initialized");
 
   // blink green when ready
   gLed.blink(led::GREEN, 3);
+  Serial.println("Ready");
 }
 
 void loop() {

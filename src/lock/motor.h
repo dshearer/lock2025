@@ -7,6 +7,8 @@
     @brief Module for controlling the lock motor.
 */
 namespace motor {
+    const uint8_t i2cAddr = 0x60;
+
     typedef enum {
         STATE_STOPPED = 0,
         STATE_TURNING_LEFT = 1,

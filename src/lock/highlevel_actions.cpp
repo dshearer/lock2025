@@ -8,6 +8,8 @@
 
 #define TURN_TIMEOUT_MS 5000
 
+const uint8_t highlevel_actions::motorI2cAddr = motor::i2cAddr;
+
 static unsigned long gMillisTillCenter = 0;
 
 static bool shouldStopSpinning(direction_t dir) {

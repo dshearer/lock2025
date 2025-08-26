@@ -2,16 +2,17 @@
 #include <Arduino.h>
 #include <Adafruit_MotorShield.h>
 
-#define MOTOR_SPEED 255
+#define MOTOR_SPEED 128
 #define INCREMENT (MOTOR_SPEED/20)
+#define MOTOR_SHIELD_PORT 4
 
 // Create the motor shield object with the default I2C address
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Or, create it with a different I2C address (say for stacking)
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x60);
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(motor::i2cAddr);
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor* myMotor = AFMS.getMotor(1);
+Adafruit_DCMotor* myMotor = AFMS.getMotor(MOTOR_SHIELD_PORT);
 // You can also make another motor on port M2
 // Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 
