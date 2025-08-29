@@ -73,14 +73,11 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
 }
 
 static void goToCenter(direction_t fromDir) {
-    const unsigned long startMillis = millis();
+    timer::start(gMillisTillCenter);
     motor::spinUp(oppositeDirection(fromDir));
-    const unsigned long spinUpDuration = millis() - startMillis;
-    unsigned long toDelay = 0;
-    if (spinUpDuration < gMillisTillCenter) {
-        toDelay = gMillisTillCenter - spinUpDuration;
+    while (!timer::fired()) {
+        idle();
     }
-    delay(toDelay);
     motor::spinDown();
 }
 
