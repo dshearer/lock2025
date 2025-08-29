@@ -69,9 +69,18 @@ void motor::spinDown() {
     currState = motor::STATE_STOPPED;
 }
 
+const bool gradualSpin = false;
+
 void motor::spinUp(direction_t dir) {
     if (dir == stateToDirection(currState)) {
         // Serial.println("Motor is already spinning in the requested direction.");
+        return;
+    }
+
+    if (!gradualSpin) {
+        currState = directionToState(dir);
+        myMotor->run(dir);
+        myMotor->setSpeed(MOTOR_SPEED);
         return;
     }
 

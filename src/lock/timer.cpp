@@ -23,13 +23,15 @@ void timer::start(int timeoutMs) {
     while (TC4->COUNT32.CTRLA.bit.SWRST);
 
     // 3. Configure timer
-    TC4->COUNT32.CTRLA.reg = TC_CTRLA_MODE_COUNT32 | TC_CTRLA_PRESCALER_DIV1024;
+    TC4->COUNT32.CTRLA.reg = TC_CTRLA_MODE_COUNT32 | TC_CTRLA_PRESCALER_DIV256;
     while (TC4->COUNT32.STATUS.bit.SYNCBUSY);
 
     // 4. Calculate and set compare value
-    const uint32_t scaledHz = 48000000 / 1024;
-    const uint32_t turnTimeoutSecs = timeoutMs / 1000;
-    const uint32_t timerCount = scaledHz * turnTimeoutSecs;
+    const uint32_t scaledHz = 48000000 / 256; // corresponds to TC_CTRLA_PRESCALER_DIV256, above
+    // Timer ticks scaledHz times per second.
+    const uint32_t scaledMsHz = scaledHz / 1000;
+    // Timer ticks scaledMsHz times per millisecond.
+    const uint32_t timerCount = scaledMsHz * timeoutMs;
 
     TC4->COUNT32.CC[0].reg = timerCount;
     while (TC4->COUNT32.STATUS.bit.SYNCBUSY);

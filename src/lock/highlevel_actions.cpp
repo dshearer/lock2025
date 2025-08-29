@@ -37,9 +37,6 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
         *turned = true;
     }
 
-    // shine yellow
-    // gLed.shine(led::YELLOW);
-
     // spin
     const motor::state_t motor_state = motor::state();
     if (motor_state == motor::STATE_STOPPED) {
@@ -57,17 +54,20 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     }
     timer::stop();
 
-    // stop the motor
-    motor::spinDown();
-
-    // turn off the LED
-    // led::off();
-
-    // check status
-    if (!too_far::get(dir)) {
-        // we timed out before we completed the turn
+    if (timer::fired()) {
+        // we timed out
+        motor::spinDown();
         return err::HARDWARE_FAILURE;
     }
+
+    // now, nudge it a little more so that the button doesn't push the gear back
+    timer::start(500);
+    while (!timer::fired()) {
+        idle();
+    }
+
+    // stop the motor
+    motor::spinDown();
 
     return err::OK;
 }
