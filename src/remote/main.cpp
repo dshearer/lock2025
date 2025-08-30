@@ -19,13 +19,9 @@ static void sendCommand(cmds::command_t cmd) {
     radio::resp_t resp = { {0} };
     err::t e = remote_radio::send(cmd, &resp);
     if (e != err::OK) {
-        Serial.print("ERROR: ");
-        Serial.println(err::to_string(e));
         gLed.blink(2);
         return;
     }
-    Serial.print("Response: ");
-    Serial.println(resp.msg);
     gLed.off();
 }
 
