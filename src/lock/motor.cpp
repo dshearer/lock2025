@@ -102,3 +102,10 @@ void motor::spinUp(direction_t dir) {
 motor::state_t motor::state() {
     return currState;
 }
+
+void motor::spin(direction_t dir, motor::should_stop_fn_t shouldStop) {
+    // start the motor at half-speed
+    myMotor->run(dir);
+
+    // wait for 
+}
