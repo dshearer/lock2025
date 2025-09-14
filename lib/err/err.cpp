@@ -13,7 +13,6 @@ static const char *error_strings[] = {
     [err::RADIO_INVALID_COMMAND] = "Invalid command sent to remote",
     [err::RADIO_MSG_ENQUEUE_FAILED] = "Failed to enqueue message for sending",
     [err::HARDWARE_FAILURE] = "Hardware failure",
-    [err::NO_TIMERS] = "No timers available",
 };
 
 const char *err::to_string(t err) {

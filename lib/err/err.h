@@ -17,7 +17,6 @@ namespace err {
     const t RADIO_INVALID_COMMAND = 9;
     const t RADIO_MSG_ENQUEUE_FAILED = 10;
     const t HARDWARE_FAILURE = 11;
-    const t NO_TIMERS = 12;
 
     const char *to_string(t err);
 }

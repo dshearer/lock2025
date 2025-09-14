@@ -34,17 +34,6 @@ namespace motor {
     state_t state();
 
     /*!
-        @brief Spin the motor in the given direction. It will continue spinning until shouldStop returns true.
-        After starting the motor, this enters a loop where it calls idle and shouldStop. Whatever condition shouldStop
-        checks for should cause an interrupt so that the call to idle returns.
-
-        @param dir The direction to spin the motor in.
-        @param shouldStopFn A function that will be called periodically while the motor spins. If it returns
-        true, then the motor will be stopped immediately.
-    */
-    void spin(direction_t dir, should_stop_fn_t shouldStop);
-
-    /*!
         @brief Spin the motor up to full speed in the given direction. This function will gradually increase the speed of the
         motor from 0 to the max speed. While doing so, this function calls the should_stop_fn_t passed to init, passing it
         dir. If that function returns true, then this function stops the motor and returns.

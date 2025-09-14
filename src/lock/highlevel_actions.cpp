@@ -33,18 +33,9 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
         return err::OK;
     }
 
-    // get timer
-    Timer *timer = Timer::get();
-    if (timer == nullptr) {
-        motor::spinDown();
-        return err::NO_TIMERS;
-    }
-
     if (turned != nullptr) {
         *turned = true;
     }
-
-    err::t retval = err::OK;
 
     // spin
     const motor::state_t motor_state = motor::state();
@@ -57,55 +48,37 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     }
 
     // wait till we're all the way to dir
-    timer->start(TURN_TIMEOUT_MS);
-    while (!too_far::get(dir) && !timer->fired()) {
+    timer::start(TURN_TIMEOUT_MS);
+    while (!too_far::get(dir) && !timer::fired()) {
         idle();
     }
-    timer->stop();
+    timer::stop();
 
-    if (timer->fired()) {
+    if (timer::fired()) {
         // we timed out
         motor::spinDown();
-        retval = err::HARDWARE_FAILURE;
-        goto done;
+        return err::HARDWARE_FAILURE;
     }
 
     // now, nudge it a little more so that the button doesn't push the gear back
-    timer->start(500);
-    while (!timer->fired()) {
+    timer::start(500);
+    while (!timer::fired()) {
         idle();
     }
-    timer->stop();
 
     // stop the motor
     motor::spinDown();
 
-done:
-    Timer::put(timer);
-    return retval;
+    return err::OK;
 }
 
-static err::t goToCenter(direction_t fromDir) {
-    err::t retval = err::OK;
-
-    // get timer
-    Timer *timer = Timer::get();
-    if (timer == nullptr) {
-        motor::spinDown();
-        retval = err::NO_TIMERS;
-        goto done;
-    }
-
-    timer->start(gMillisTillCenter);
+static void goToCenter(direction_t fromDir) {
+    timer::start(gMillisTillCenter);
     motor::spinUp(oppositeDirection(fromDir));
-    while (!timer->fired()) {
+    while (!timer::fired()) {
         idle();
     }
     motor::spinDown();
-
-done:
-    Timer::put(timer);
-    return retval;
 }
 
 err::t highlevel_actions::init() {
@@ -124,20 +97,18 @@ err::t highlevel_actions::init() {
     gMillisTillCenter = (millis() - startMillis) / 2;
 
     // go to the center
-    return goToCenter(DIRECTION_RIGHT);
+    goToCenter(DIRECTION_RIGHT);
+    return err::OK;
 }
 
 err::t highlevel_actions::turn(direction_t dir) {
     bool turned = false;
-    err::t e = justTurn(dir, &turned);
+    const err::t e = justTurn(dir, &turned);
     if (e != err::OK) {
         return e;
     }
     if (turned) {
-        e = goToCenter(dir);
-        if (e != err::OK) {
-            return e;
-        }
+        goToCenter(dir);
     }
     return err::OK;
 }
