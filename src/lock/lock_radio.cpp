@@ -5,7 +5,7 @@ static lock_radio::handler_t gHandler = nullptr;
 
 err::t lock_radio::init(handler_t handler) {
     gHandler = handler;
-    return radio::init(&gRf69, radio::BOARD_LOCK);
+    return radio::init(&gRf69, radio::BOARD_FEATHER);
 }
 
 err::t lock_radio::listen() {

@@ -14,11 +14,11 @@ err::t radio::init(RH_RF69 **rf69, board_t board) {
     uint8_t cs = 0;
     uint8_t intr = 0;
     switch (board) {
-        case BOARD_LOCK:
+        case BOARD_FEATHER:
             cs = RFM69_CS_LOCK;
             intr = RFM69_INT_LOCK;
             break;
-        case BOARD_REMOTE:
+        case BOARD_CUSTOM:
             cs = RFM69_CS_REMOTE;
             intr = RFM69_INT_REMOTE;
             break;
@@ -28,7 +28,7 @@ err::t radio::init(RH_RF69 **rf69, board_t board) {
 
     RH_RF69 *radio = new RH_RF69(cs, intr);
 
-    if (board == BOARD_LOCK) {
+    if (board == BOARD_FEATHER) {
         // reset radio
         pinMode(RFM69_RST_LOCK, OUTPUT);
         digitalWrite(RFM69_RST_LOCK, LOW);

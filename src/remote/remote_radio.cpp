@@ -6,7 +6,7 @@
 static RH_RF69 *gRf69 = nullptr;
 
 err::t remote_radio::init() {
-    return radio::init(&gRf69, radio::BOARD_REMOTE);
+    return radio::init(&gRf69, radio::BOARD_FEATHER);
 }
 
 err::t remote_radio::send(cmds::command_t cmd, radio::resp_t *resp) {

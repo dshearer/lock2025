@@ -5,11 +5,16 @@
 
 namespace led {
 
+    typedef enum {
+        FAST,
+        SLOW
+    } speed_t;
+
     class Mono {
     private:
         uint32_t _pin;
 
-        void blinkForever();
+        void blinkForever(speed_t speed);
 
     public:
         Mono(uint32_t pin);
@@ -18,7 +23,7 @@ namespace led {
         /*!
               \brief If times is negative, blinks forever.
         */
-        void blink(int times);
+        void blink(int times, speed_t speed);
     };
 
     typedef struct {
@@ -38,7 +43,7 @@ namespace led {
         uint32_t _greenPin;
         uint32_t _bluePin;
 
-        void blinkForever(led::color_t color);
+        void blinkForever(led::color_t color, speed_t speed);
 
     public:
         Rgb(uint32_t redPin, uint32_t greenPin, uint32_t bluePin);
@@ -47,7 +52,7 @@ namespace led {
         /*!
               \brief If times is negative, blinks forever.
         */
-        void blink(color_t color, int times);
+        void blink(color_t color, int times, speed_t speed);
     };
 }
 

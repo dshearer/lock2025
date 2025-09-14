@@ -1,7 +1,19 @@
 #include "led.h"
 #include <Arduino.h>
 
-#define BLINK_DELAY_MS 1000
+#define BLINK_SLOW_DELAY_MS 1000
+#define BLINK_FAST_DELAY_MS (BLINK_SLOW_DELAY_MS/4)
+
+unsigned long delayForSpeed(led::speed_t speed) {
+    switch (speed) {
+        case led::FAST:
+            return BLINK_FAST_DELAY_MS;
+        case led::SLOW:
+            return BLINK_SLOW_DELAY_MS;
+        default:
+            return BLINK_SLOW_DELAY_MS;
+    }
+}
 
 namespace led {
 
@@ -17,27 +29,29 @@ void Mono::off() {
     digitalWrite(this->_pin, LOW);
 }
 
-void Mono::blinkForever() {
+void Mono::blinkForever(speed_t speed) {
+    const unsigned long ms = delayForSpeed(speed);
     while (true) {
         this->on();
-        delay(BLINK_DELAY_MS);
+        delay(ms);
         this->off();
-        delay(BLINK_DELAY_MS);
+        delay(ms);
     }
 }
 
-void Mono::blink(int times) {
+void Mono::blink(int times, speed_t speed) {
     if (times < 0) {
-        this->blinkForever();
+        this->blinkForever(speed);
         return;
     }
 
+    const unsigned long ms = delayForSpeed(speed);
     for (int i = 0; i < times; ++i) {
         this->on();
-        delay(BLINK_DELAY_MS);
+        delay(ms);
         this->off();
         if (i < times - 1) { // Avoid delay after the last blink
-            delay(BLINK_DELAY_MS);
+            delay(ms);
         }
     }
 }
@@ -59,27 +73,29 @@ void Rgb::off() {
     this->shine(OFF);
 }
 
-void Rgb::blinkForever(led::color_t color) {
+void Rgb::blinkForever(led::color_t color, speed_t speed) {
+    const unsigned long ms = delayForSpeed(speed);
     while (true) {
         this->shine(color);
-        delay(BLINK_DELAY_MS);
+        delay(ms);
         this->off();
-        delay(BLINK_DELAY_MS);
+        delay(ms);
     }
 }
 
-void Rgb::blink(color_t color, int times) {
+void Rgb::blink(color_t color, int times, speed_t speed) {
     if (times < 0) {
-        this->blinkForever(color);
+        this->blinkForever(color, speed);
         return;
     }
 
+    const unsigned long ms = delayForSpeed(speed);
     for (int i = 0; i < times; ++i) {
         this->shine(color);
-        delay(BLINK_DELAY_MS);
+        delay(ms);
         this->off();
         if (i < times - 1) { // Avoid delay after the last blink
-            delay(BLINK_DELAY_MS);
+            delay(ms);
         }
     }
 }

@@ -13,8 +13,8 @@ namespace radio {
     } resp_t;
 
     typedef enum {
-        BOARD_REMOTE,
-        BOARD_LOCK
+        BOARD_CUSTOM,
+        BOARD_FEATHER
     } board_t;
 
     err::t init(RH_RF69 **rf69, board_t board);

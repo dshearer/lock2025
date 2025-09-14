@@ -96,13 +96,13 @@ void setup() {
   Serial.println("lock_radio initialized");
 
   // blink green when ready
-  gLed.blink(led::GREEN, 3);
+  gLed.blink(led::GREEN, 3, led::FAST);
   Serial.println("Ready");
 }
 
 void loop() {
   if (gHadFatalError) {
-    gLed.blink(led::RED, -1); // blink red forever
+    gLed.blink(led::RED, -1, led::SLOW); // blink red forever
     return;
   }
 
