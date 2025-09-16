@@ -4,7 +4,7 @@
 #include "too_far.h"
 #include "button.h"
 #include "idle.h"
-#include "highlevel_actions.h"
+#include "motor.h"
 #include "led.h"
 #include "lock_radio.h"
 #include "pins.h"
@@ -22,12 +22,12 @@ static void handleCommand_button(cmds::command_t cmd) {
   switch (cmd) {
   case cmds::TURN_LEFT:
     Serial.println("Should turn left");
-    e = highlevel_actions::turn(DIRECTION_LEFT);
+    e = motor::turn(DIRECTION_LEFT);
     break;
 
   case cmds::TURN_RIGHT:
     Serial.println("Should turn right");
-    e = highlevel_actions::turn(DIRECTION_RIGHT);
+    e = motor::turn(DIRECTION_RIGHT);
     break;
 
   default:
@@ -64,7 +64,7 @@ void setup() {
   // set up Wire
   Wire.begin();
   Wire.setTimeout(1000);
-  Wire.beginTransmission(highlevel_actions::motorI2cAddr);
+  Wire.beginTransmission(motor::motorI2cAddr);
   if (Wire.write(0x10) == 0) {
     fail("I2C failed");
     return;
@@ -81,7 +81,7 @@ void setup() {
   button::init(handleCommand_button);
   Serial.println("button initialized");
 
-  err::t e = highlevel_actions::init();
+  err::t e = motor::init();
   if (e != err::OK) {
     fail(err::to_string(e));
     return;
