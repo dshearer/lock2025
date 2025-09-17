@@ -61,20 +61,6 @@ void setup() {
 
   Serial.println("Starting up...");
 
-  // set up Wire
-  Wire.begin();
-  Wire.setTimeout(1000);
-  Wire.beginTransmission(motor::motorI2cAddr);
-  if (Wire.write(0x10) == 0) {
-    fail("I2C failed");
-    return;
-  }
-  if (Wire.endTransmission() != 0) {
-    fail("endTransmission returned error");
-    return;
-  }
-  Serial.println("I2C OK");
-
   too_far::init();
   Serial.println("too_far initialized");
 
@@ -86,7 +72,7 @@ void setup() {
     fail(err::to_string(e));
     return;
   }
-  Serial.println("highlevel_actions initialized");
+  Serial.println("motor initialized");
 
   e = lock_radio::init(handleCommand_radio);
   if (e != err::OK) {

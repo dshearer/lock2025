@@ -5,8 +5,6 @@
 #include <err.h>
 
 namespace motor {
-    const uint8_t motorI2cAddr = 0x60;;
-
     /*!
         @brief Connect to the motor controller over I2C. Must be called before any other functions in this namespace.
         Prepare for the motor to be used.

@@ -10,11 +10,12 @@
 #define MOTOR_SPEED 200
 #define MOTOR_SPEED_INCREMENT (MOTOR_SPEED/20)
 #define MOTOR_SHIELD_PORT 4
+#define MOTOR_SHIELD_I2C_ADDR 0x60
 
 // Create the motor shield object with the default I2C address
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Or, create it with a different I2C address (say for stacking)
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x60);
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(MOTOR_SHIELD_I2C_ADDR);
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
 Adafruit_DCMotor* myMotor = AFMS.getMotor(MOTOR_SHIELD_PORT);
@@ -93,6 +94,19 @@ static void goToCenter(direction_t fromDir) {
 }
 
 err::t motor::init() {
+    // set up Wire
+    Wire.begin();
+    Wire.setTimeout(1000);
+    Wire.beginTransmission(MOTOR_SHIELD_I2C_ADDR);
+    if (Wire.write(0x10) == 0) {
+        Serial.println("I2C failed");
+        return err::HARDWARE_FAILURE;
+    }
+    if (Wire.endTransmission() != 0) {
+        Serial.println("endTransmission returned error");
+        return err::HARDWARE_FAILURE;
+    }
+    
     Serial.println("Calling AFMS begin");
     if (!AFMS.begin()) { // create with the default frequency 1.6KHz
         Serial.println("Could not find Motor Shield. Check wiring.");
