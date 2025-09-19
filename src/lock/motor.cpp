@@ -58,6 +58,7 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
             // we timed out
             myMotor->setSpeed(0);
             myMotor->run(RELEASE);
+            Serial.println("Turn timed out");
             return err::HARDWARE_FAILURE;
         }
     }
