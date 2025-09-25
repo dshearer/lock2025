@@ -15,10 +15,10 @@
 // Create the motor shield object with the default I2C address
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Or, create it with a different I2C address (say for stacking)
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(MOTOR_SHIELD_I2C_ADDR);
+static Adafruit_MotorShield AFMS = Adafruit_MotorShield(MOTOR_SHIELD_I2C_ADDR);
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor* myMotor = AFMS.getMotor(MOTOR_SHIELD_PORT);
+static Adafruit_DCMotor* myMotor = AFMS.getMotor(MOTOR_SHIELD_PORT);
 // You can also make another motor on port M2
 // Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 

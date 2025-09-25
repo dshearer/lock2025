@@ -18,10 +18,6 @@ void button::init(handler_t handler) {
     gTurnButton.attach(PIN_BUTTON, INPUT_PULLUP);
     gTurnButton.interval(INTERVAL_MS);
     gTurnButton.setPressedState(LOW);
-
-    // subscribe to interrupts
-    // attachInterrupt(digitalPinToInterrupt(PIN_TURN_LEFT), leftISR, CHANGE);
-    // attachInterrupt(digitalPinToInterrupt(PIN_TURN_RIGHT), rightISR, CHANGE);
 }
 
 void button::update() {

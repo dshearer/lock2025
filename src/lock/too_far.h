@@ -12,9 +12,6 @@ namespace too_far {
         @return true if the lock is too far in the given direction, false otherwise.
     */
     bool get(direction_t);
-
-    void printState();
-    void printStateOnInterruptLoop();
 };
 
 #endif
