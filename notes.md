@@ -11,7 +11,6 @@
 - RFM69HCW
   - 2.4 to 3.6V
 
-
 # Power
 - ATmega328P:
     - Active: 8mA
@@ -20,3 +19,9 @@
 - RFM69HCW:
     - Transmit: 45-130mA
     - Sleep: 0.1µA
+- Motor
+  - Takes 150mA to spin
+
+# Position detection
+- Hall-effect sensor
+- quadrature encoder
