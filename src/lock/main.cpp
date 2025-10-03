@@ -1,5 +1,4 @@
 #include <Wire.h>
-#include <Adafruit_MotorShield.h>
 #include <led.h>
 #include "too_far.h"
 #include "button.h"
@@ -8,6 +7,7 @@
 #include "led.h"
 #include "lock_radio.h"
 #include "pins.h"
+#include "tb6612fng_driver.h"
 
 static bool gHadFatalError = false;
 

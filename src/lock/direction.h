@@ -10,6 +10,17 @@ typedef enum
     DIRECTION_RIGHT = FORWARD,
 } direction_t;
 
+static inline const char* directionToString(direction_t dir) {
+    switch (dir) {
+    case DIRECTION_LEFT:
+        return "left";
+    case DIRECTION_RIGHT:
+        return "right";
+    default:
+        return "unknown";
+    }
+}
+
 static inline direction_t oppositeDirection(direction_t dir) {
     switch (dir) {
     case DIRECTION_LEFT:
@@ -20,5 +31,10 @@ static inline direction_t oppositeDirection(direction_t dir) {
         return DIRECTION_NONE;
     }
 }
+
+const direction_t ALL_DIRECTIONS[] = {
+    DIRECTION_LEFT,
+    DIRECTION_RIGHT,
+};
 
 #endif

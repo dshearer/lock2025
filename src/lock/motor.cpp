@@ -2,33 +2,32 @@
 #include "too_far.h"
 #include "timer.h"
 #include "idle.h"
+#include "tb6612fng_driver.h"
 #include <Arduino.h>
-#include <Adafruit_MotorShield.h>
 
 #define TURN_TIMEOUT_MS 5000
 
 #define MOTOR_SPEED 200
 #define MOTOR_SPEED_INCREMENT (MOTOR_SPEED/20)
-#define MOTOR_SHIELD_PORT 4
-#define MOTOR_SHIELD_I2C_ADDR 0x60
-
-// Create the motor shield object with the default I2C address
-// Adafruit_MotorShield AFMS = Adafruit_MotorShield();
-// Or, create it with a different I2C address (say for stacking)
-static Adafruit_MotorShield AFMS = Adafruit_MotorShield(MOTOR_SHIELD_I2C_ADDR);
-
-// Select which 'port' M1, M2, M3 or M4. In this case, M1
-static Adafruit_DCMotor* myMotor = AFMS.getMotor(MOTOR_SHIELD_PORT);
-// You can also make another motor on port M2
-// Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 
 static unsigned long millisTillCenter = 0;
+
+static tb6612fng_driver::mode_t directionToMode(direction_t dir) {
+    switch (dir) {
+    case DIRECTION_LEFT:
+        return tb6612fng_driver::MODE_DIRECTION_1;
+    default:
+        return tb6612fng_driver::MODE_DIRECTION_2;
+    }
+}
 
 static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     // assume that motor is stopped
 
     if (too_far::get(dir)) {
         // we're already fully turned in the requested direction
+        Serial.print("Already too far ");
+        Serial.println(directionToString(dir));
         if (turned != nullptr) {
             *turned = false;
         }
@@ -39,13 +38,16 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
         *turned = true;
     }
 
+    Serial.print("Turning ");
+    Serial.println(directionToString(dir));
+
     // get up to speed
-    myMotor->run(dir);
+    tb6612fng_driver::run(directionToMode(dir));
     for (int i = 0; i <= MOTOR_SPEED; i += MOTOR_SPEED_INCREMENT) {
         if (too_far::get(dir)) {
             break;
         }
-        myMotor->setSpeed(i);
+        tb6612fng_driver::setSpeed(i);
         delay(50); // Allow time for the motor to spin up
     }
 
@@ -56,8 +58,8 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
 
         if (millis() - spinStart > TURN_TIMEOUT_MS) {
             // we timed out
-            myMotor->setSpeed(0);
-            myMotor->run(RELEASE);
+            tb6612fng_driver::setSpeed(0);
+            tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
             Serial.println("Turn timed out");
             return err::HARDWARE_FAILURE;
         }
@@ -67,8 +69,8 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     delay(300);
 
     // stop the motor
-    myMotor->setSpeed(0);
-    myMotor->run(RELEASE);
+    tb6612fng_driver::setSpeed(0);
+    tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
     return err::OK;
 }
 
@@ -76,12 +78,12 @@ static void goToCenter(direction_t fromDir) {
     timer::start(millisTillCenter);
 
     // get up to speed
-    myMotor->run(oppositeDirection(fromDir));
+    tb6612fng_driver::run(directionToMode(oppositeDirection(fromDir)));
     for (int i = 0; i <= MOTOR_SPEED; i += MOTOR_SPEED_INCREMENT) {
         if (timer::fired()) {
             break;
         }
-        myMotor->setSpeed(i);
+        tb6612fng_driver::setSpeed(i);
         delay(50); // Allow time for the motor to spin up
     }
 
@@ -90,48 +92,45 @@ static void goToCenter(direction_t fromDir) {
     }
 
     // spin down
-    myMotor->setSpeed(0);
-    myMotor->run(RELEASE);
+    tb6612fng_driver::setSpeed(0);
+    tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
 }
 
 err::t motor::init() {
-    // set up Wire
-    Wire.begin();
-    Wire.setTimeout(1000);
-    Wire.beginTransmission(MOTOR_SHIELD_I2C_ADDR);
-    if (Wire.write(0x10) == 0) {
-        Serial.println("I2C failed");
-        return err::HARDWARE_FAILURE;
-    }
-    if (Wire.endTransmission() != 0) {
-        Serial.println("endTransmission returned error");
-        return err::HARDWARE_FAILURE;
-    }
-    
-    Serial.println("Calling AFMS begin");
-    if (!AFMS.begin()) { // create with the default frequency 1.6KHz
-        Serial.println("Could not find Motor Shield. Check wiring.");
-        return err::HARDWARE_FAILURE;
-    }
-    Serial.println("Motor Shield found.");
+    tb6612fng_driver::init();
 
-    myMotor->setSpeed(0);
-    myMotor->run(RELEASE);
+    /*
+    Even if a too-far switch is triggered, this doesn't mean that the inner gear is all the way
+    to that side. We need to *cause* a too-far switch to be triggered, before we can measure how long
+    it takes to go to the center.
+    */
+
+    long millisTillOtherSide = 0;
+
+    direction_t startDir = DIRECTION_LEFT;
+    if (too_far::get(DIRECTION_LEFT)) {
+        startDir = DIRECTION_RIGHT;
+    }
+
+    // start on one side
+    err::t e = justTurn(startDir);
+    if (e != err::OK) {
+        return e;
+    }
+
+    // measure how long it takes to get to the other side
+    const long startMillis = millis();
+    e = justTurn(oppositeDirection(startDir));
+    if (e != err::OK) {
+        return e;
+    }
+    millisTillOtherSide = millis() - startMillis;
 
     // measure how long it takes to get to the center
-    err::t e = justTurn(DIRECTION_LEFT);
-    if (e != err::OK) {
-        return e;
-    }
-    const long startMillis = millis();
-    e = justTurn(DIRECTION_RIGHT);
-    if (e != err::OK) {
-        return e;
-    }
-    millisTillCenter = (millis() - startMillis) / 2;
+    millisTillCenter = millisTillOtherSide / 2;
 
     // go to the center
-    goToCenter(DIRECTION_RIGHT);
+    goToCenter(oppositeDirection(startDir));
     
     return err::OK;
 }
