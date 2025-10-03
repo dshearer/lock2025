@@ -10,7 +10,7 @@
 #define MOTOR_SPEED 200
 #define MOTOR_SPEED_INCREMENT (MOTOR_SPEED/20)
 
-static unsigned long millisTillCenter = 0;
+static unsigned long gMillisTillCenter = 0;
 
 static tb6612fng_driver::mode_t directionToMode(direction_t dir) {
     switch (dir) {
@@ -24,6 +24,9 @@ static tb6612fng_driver::mode_t directionToMode(direction_t dir) {
 static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     // assume that motor is stopped
 
+    err::t e = err::OK;
+    unsigned long spinStart = 0;
+
     if (too_far::get(dir)) {
         // we're already fully turned in the requested direction
         Serial.print("Already too far ");
@@ -31,7 +34,7 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
         if (turned != nullptr) {
             *turned = false;
         }
-        return err::OK;
+        goto done;
     }
 
     if (turned != nullptr) {
@@ -52,30 +55,29 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     }
 
     // remain at full speed
-    const unsigned long spinStart = millis();
+    spinStart = millis();
     while (!too_far::get(dir)) {
         delay(50);
 
         if (millis() - spinStart > TURN_TIMEOUT_MS) {
             // we timed out
-            tb6612fng_driver::setSpeed(0);
-            tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
             Serial.println("Turn timed out");
-            return err::HARDWARE_FAILURE;
+            e = err::HARDWARE_FAILURE;
+            goto done;
         }
     }
 
     // now, nudge it a little more so that the button doesn't push the gear back
     delay(300);
 
-    // stop the motor
+done:
+    // stop the motor (but don't release it)
     tb6612fng_driver::setSpeed(0);
-    tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
-    return err::OK;
+    return e;
 }
 
 static void goToCenter(direction_t fromDir) {
-    timer::start(millisTillCenter);
+    timer::start(gMillisTillCenter);
 
     // get up to speed
     tb6612fng_driver::run(directionToMode(oppositeDirection(fromDir)));
@@ -93,7 +95,6 @@ static void goToCenter(direction_t fromDir) {
 
     // spin down
     tb6612fng_driver::setSpeed(0);
-    tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
 }
 
 err::t motor::init() {
@@ -105,6 +106,8 @@ err::t motor::init() {
     it takes to go to the center.
     */
 
+    err::t e = err::OK;
+    long startMillis = 0;
     long millisTillOtherSide = 0;
 
     direction_t startDir = DIRECTION_LEFT;
@@ -113,36 +116,42 @@ err::t motor::init() {
     }
 
     // start on one side
-    err::t e = justTurn(startDir);
+    e = justTurn(startDir);
     if (e != err::OK) {
-        return e;
+        goto done;
     }
 
     // measure how long it takes to get to the other side
-    const long startMillis = millis();
+    startMillis = millis();
     e = justTurn(oppositeDirection(startDir));
     if (e != err::OK) {
-        return e;
+        goto done;
     }
     millisTillOtherSide = millis() - startMillis;
 
     // measure how long it takes to get to the center
-    millisTillCenter = millisTillOtherSide / 2;
+    gMillisTillCenter = millisTillOtherSide / 2;
 
     // go to the center
     goToCenter(oppositeDirection(startDir));
-    
-    return err::OK;
+
+done:
+    tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
+    return e;
 }
 
 err::t motor::turn(direction_t dir) {
+    err::t e = err::OK;
     bool turned = false;
-    const err::t e = justTurn(dir, &turned);
+    e = justTurn(dir, &turned);
     if (e != err::OK) {
-        return e;
+        goto done;
     }
     if (turned) {
         goToCenter(dir);
     }
-    return err::OK;
+
+done:
+    tb6612fng_driver::run(tb6612fng_driver::MODE_RELEASE);
+    return e;
 }

@@ -18,10 +18,6 @@ void tb6612fng_driver::init() {
     pinMode(MOTOR_PIN_AIN2, OUTPUT);
     pinMode(MOTOR_PIN_PWMA, OUTPUT);
     pinMode(MOTOR_PIN_STBY, OUTPUT);
-
-    // note: motor is initially stopped (STBY is driven high by board)
-
-    // stop motor
     run(MODE_RELEASE);
 }
 
@@ -40,10 +36,10 @@ void tb6612fng_driver::run(mode_t mode) {
             break;
 
         case MODE_RELEASE:
-            digitalWrite(MOTOR_PIN_STBY, HIGH);
+            digitalWrite(MOTOR_PIN_STBY, LOW);
             digitalWrite(MOTOR_PIN_AIN1, LOW);
             digitalWrite(MOTOR_PIN_AIN2, LOW);
-            analogWrite(MOTOR_PIN_PWMA, MAX_SPEED);
+            analogWrite(MOTOR_PIN_PWMA, 0);
             break;
     }
 }
