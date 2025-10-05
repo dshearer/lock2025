@@ -1,6 +1,5 @@
 #include "motor.h"
 #include "too_far.h"
-#include "timer.h"
 #include "idle.h"
 #include "tb6612fng_driver.h"
 #include <Arduino.h>
@@ -68,7 +67,8 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     }
 
     // now, nudge it a little more so that the button doesn't push the gear back
-    delay(300);
+    tb6612fng_driver::setSpeed(MOTOR_SPEED/2);
+    delay(600);
 
 done:
     // stop the motor (but don't release it)
@@ -77,20 +77,21 @@ done:
 }
 
 static void goToCenter(direction_t fromDir) {
-    timer::start(gMillisTillCenter);
+    const long unsigned timeToStop = millis() + gMillisTillCenter;
 
     // get up to speed
     tb6612fng_driver::run(directionToMode(oppositeDirection(fromDir)));
     for (int i = 0; i <= MOTOR_SPEED; i += MOTOR_SPEED_INCREMENT) {
-        if (timer::fired()) {
+        if (millis() >= timeToStop) {
             break;
         }
         tb6612fng_driver::setSpeed(i);
         delay(50); // Allow time for the motor to spin up
     }
 
-    while (!timer::fired()) {
-        idle();
+    const long unsigned now = millis();
+    if (now < timeToStop) {
+        delay(timeToStop - now);
     }
 
     // spin down
