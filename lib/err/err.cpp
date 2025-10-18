@@ -13,6 +13,9 @@ static const char *error_strings[] = {
     [err::RADIO_INVALID_COMMAND] = "Invalid command sent to remote",
     [err::RADIO_MSG_ENQUEUE_FAILED] = "Failed to enqueue message for sending",
     [err::HARDWARE_FAILURE] = "Hardware failure",
+    [err::MOTOR_STALLED] = "Motor stalled",
+    [err::NO_CURRENT_TO_MOTOR] = "No current to motor",
+    [err::GEAR_NEVER_REACHED_END] = "Gear never reached end",
 };
 
 const char *err::to_string(t err) {

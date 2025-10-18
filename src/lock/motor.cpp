@@ -1,10 +1,10 @@
 #include "motor.h"
 #include "too_far.h"
-#include "idle.h"
 #include "tb6612fng_driver.h"
+#include "pins.h"
+#include "stall_detector.h"
+#include <num_elems.h>
 #include <Arduino.h>
-
-#define TURN_TIMEOUT_MS 5000
 
 #define MOTOR_SPEED 200
 #define MOTOR_SPEED_INCREMENT (MOTOR_SPEED/20)
@@ -14,9 +14,9 @@ static unsigned long gMillisTillCenter = 0;
 static tb6612fng_driver::mode_t directionToMode(direction_t dir) {
     switch (dir) {
     case DIRECTION_LEFT:
-        return tb6612fng_driver::MODE_DIRECTION_1;
-    default:
         return tb6612fng_driver::MODE_DIRECTION_2;
+    default:
+        return tb6612fng_driver::MODE_DIRECTION_1;
     }
 }
 
@@ -24,7 +24,7 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
     // assume that motor is stopped
 
     err::t e = err::OK;
-    unsigned long spinStart = 0;
+    StallDetector stallDetector(millis());
 
     if (too_far::get(dir)) {
         // we're already fully turned in the requested direction
@@ -51,23 +51,30 @@ static err::t justTurn(direction_t dir, bool* turned = nullptr) {
         }
         tb6612fng_driver::setSpeed(i);
         delay(50); // Allow time for the motor to spin up
+
+        // check for stall
+        const err::t stallErr = stallDetector.update(millis(), current::read());
+        if (stallErr != err::OK) {
+            e = stallErr;
+            goto done;
+        }
     }
 
     // remain at full speed
-    spinStart = millis();
+    tb6612fng_driver::setSpeed(MOTOR_SPEED);
     while (!too_far::get(dir)) {
         delay(50);
 
-        if (millis() - spinStart > TURN_TIMEOUT_MS) {
-            // we timed out
-            Serial.println("Turn timed out");
-            e = err::HARDWARE_FAILURE;
+        // check for stall
+        const err::t stallErr = stallDetector.update(millis(), current::read());
+        if (stallErr != err::OK) {
+            e = stallErr;
             goto done;
         }
     }
 
     // now, nudge it a little more so that the button doesn't push the gear back
-    tb6612fng_driver::setSpeed(MOTOR_SPEED/2);
+    tb6612fng_driver::setSpeed(MOTOR_SPEED / 2);
     delay(600);
 
 done:
@@ -100,6 +107,7 @@ static void goToCenter(direction_t fromDir) {
 
 err::t motor::init() {
     tb6612fng_driver::init();
+    current::init();
 
     /*
     Even if a too-far switch is triggered, this doesn't mean that the inner gear is all the way

@@ -21,7 +21,19 @@
     - Sleep: 0.1µA
 - Motor
   - Takes 150mA to spin
+  - Batteries provide 6V
 
 # Position detection
 - Hall-effect sensor
 - quadrature encoder
+
+# Motor current/voltage
+
+- Startup: No back EMF yet, so current is very high (called inrush current)
+- Running freely: High back EMF reduces current to just what's needed to overcome friction
+- Under heavy load: Motor slows, back EMF decreases, current increases to provide more torque
+- Stalled motor: No rotation = no back EMF = maximum current flows (can damage the motor!)
+
+# Lock board max dimens
+
+24mm X 63mm X 9mm

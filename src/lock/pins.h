@@ -11,9 +11,11 @@
 #define PIN_BLUE 13
 
 // pins for TB6612FNG motor board
-#define MOTOR_PIN_AIN1 PIN_A1
-#define MOTOR_PIN_AIN2 PIN_A0
+#define MOTOR_PIN_AIN1 A1
+#define MOTOR_PIN_AIN2 A0
 #define MOTOR_PIN_PWMA 10
-#define MOTOR_PIN_STBY PIN_A2
+#define MOTOR_PIN_STBY A2
+
+#define MOTOR_CURRENT_PIN A3
 
 #endif
