@@ -9,8 +9,8 @@ Import("env")
 #
 
 ENV_TO_SERIAL = {
-    'lock': '6E1B2DC55154393746202020FF19071D',
-    'remote': '2EF3076850305247522E3120FF112711',
+    'lock': '2EF3076850305247522E3120FF112711',
+    'remote': '',
 }
 
 def get_port_for_env(env_name: str) -> Optional[str]:
