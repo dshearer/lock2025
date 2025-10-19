@@ -23,6 +23,11 @@
   - Takes 150mA to spin
   - Batteries provide 6V
 
+- MPM3610 - buck converter 6V -> 3.3V
+  - Input voltage must be between 4.5V and 21V
+  - 1.2A Continuous Load Current
+  - 200μA Low Quiescent Current
+
 # Position detection
 - Hall-effect sensor
 - quadrature encoder
@@ -37,3 +42,8 @@
 # Lock board max dimens
 
 24mm X 63mm X 9mm
+
+# Voltage conversion
+
+- Use MPM3610
+  - Use Forced PWM Mode (connect AAM)
