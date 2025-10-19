@@ -45,12 +45,10 @@ static void handleCommand_radio(cmds::command_t cmd, radio::resp_t *resp) {
   strncpy(resp->msg, "Done", sizeof(resp->msg) - 1);
 }
 
-static led::Rgb gLed(PIN_RED, PIN_GREEN, PIN_BLUE);
+static led::Mono gLed(13); // on-board LEd
 
 void setup() {
   delay(2000);
-
-  gLed.shine(led::PURPLE);
 
   // set up serial
   Serial.begin(9600); // set up Serial library at 9600 bps
@@ -82,13 +80,13 @@ void setup() {
   Serial.println("lock_radio initialized");
 
   // blink green when ready
-  gLed.blink(led::GREEN, 3, led::FAST);
+  gLed.blink(3, led::FAST);
   Serial.println("Ready");
 }
 
 void loop() {
   if (gHadFatalError) {
-    gLed.blink(led::RED, -1, led::SLOW); // blink red forever
+    gLed.blink(-1, led::SLOW); // blink red forever
     return;
   }
 

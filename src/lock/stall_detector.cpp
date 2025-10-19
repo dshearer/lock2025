@@ -101,26 +101,48 @@ static bool currentIsZero(current::v current) {
     return current == 0;
 }
 
-StallDetector::StallDetector(unsigned long now) {
-    assert(NUM_ELEMS(this->_detectors) == 3);
-    this->_detectors[0] = new CurrentCountingDetector(currentIsHigh, NEEDED_HIGH_CURRENT_COUNT);
-    this->_detectors[1] = new CurrentCountingDetector(currentIsZero, 10);
-    this->_detectors[2] = new TimeStallDetector(now);
+class ListNode {
+public:
+    StallDetectorImpl *detector;
+    ListNode *next;
+
+    ListNode(StallDetectorImpl *d) : detector(d), next(nullptr) {}
+};
+
+StallDetector::StallDetector(unsigned long now) : _listNode(nullptr) {
+    const bool active = true;
+
+    if (!active) {
+        return;
+    }
+
+    ListNode *node1 = new ListNode(new CurrentCountingDetector(currentIsHigh, NEEDED_HIGH_CURRENT_COUNT));
+    ListNode *node2 = new ListNode(new CurrentCountingDetector(currentIsZero, 15));
+    ListNode *node3 = new ListNode(new TimeStallDetector(now));
+    node1->next = node2;
+    node2->next = node3;
+    this->_listNode = node2;
 }
 
 StallDetector::~StallDetector() {
-    for (size_t i = 0; i < NUM_ELEMS(this->_detectors); ++i) {
-        delete this->_detectors[i];
+    ListNode *node = (ListNode *) this->_listNode;
+    while (node != nullptr) {
+        ListNode *next = node->next;
+        delete node->detector;
+        delete node;
+        node = next;
     }
 }
 
 err::t StallDetector::update(unsigned long now, current::v current) {
     err::t e = err::OK;
-    for (size_t i = 0; i < NUM_ELEMS(this->_detectors); ++i) {
-        const err::t currErr = this->_detectors[i]->update(now, current);
+    ListNode *node = (ListNode *) this->_listNode;
+    while (node != nullptr) {
+        const err::t currErr = node->detector->update(now, current);
         if (e == err::OK) {
             e = currErr;
         }
+        node = node->next;
     }
     return e;
 }

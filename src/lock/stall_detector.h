@@ -4,8 +4,6 @@
 #include <err.h>
 #include "current.h"
 
-class StallDetectorImpl;
-
 /*!
     \brief A class for detecting when the motor has stopped working. It can detect problems of various types (which are
     implemented as subclasses of StallDetectorImpl).
@@ -23,7 +21,7 @@ public:
     err::t update(unsigned long now, current::v current);
 
 private:
-    StallDetectorImpl* _detectors[3];
+    void *_listNode;
 };
 
 #endif
